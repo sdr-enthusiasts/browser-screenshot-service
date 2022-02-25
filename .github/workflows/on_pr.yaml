@@ -130,8 +130,7 @@ jobs:
           tags: ${{ steps.tag-name.outputs.image_tag }}
 
   test_function:
-
-    name: Test Build
+    name: Test Functionality
     runs-on: ubuntu-latest
     needs: [test_build]
     strategy:
@@ -205,18 +204,39 @@ jobs:
           platforms: ${{ matrix.docker-platform }}
           push: false
 
+      # Set up testing output filename
+      - name: Set up image tag name
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        id: test_output_filename
+        env:
+          ARCH: ${{ matrix.docker-platform }}
+        run: |
+          echo "::set-output name=output_filename::testing_output/output_${ARCH//\//_}.png"
+
       # Decode image from set-output in testing container
       - name: Retrieve test image
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         env:
           IMAGE_DATA: ${{ steps.test-build.outputs.output_image }}
           ARCH: ${{ matrix.docker-platform }}
+          OUTPUT_IMAGE: ${{ steps.test_output_filename.outputs.output_filename }}
         run: |
           mkdir -p testing_output/
-          echo "$IMAGE_DATA" | sed -z 's/,/\n/g;' | uudecode > testing_output/output.png
+          echo "$IMAGE_DATA" | sed -z 's/,/\n/g;' | uudecode > "${OUTPUT_IMAGE}"
 
-      - name: Upload test image
+      - name: Upload test image as artifact
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: test_snap_${{ matrix.docker-platform }}
           path: testing_output/output.png
+
+      - name: Upload artifacts to PR
+        if: ${{ github.event_name == 'pull_request' }} && steps.changed-files-specific.outputs.any_changed == 'true'
+        uses: gavv/pull-request-artifacts@v1.0.0
+        with:
+          commit: ${{ github.event.pull_request.head.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: |
+            ${{ steps.test_output_filename.outputs.output_filename }}
+            
