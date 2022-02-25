@@ -13,8 +13,6 @@ RUN set -x && \
     # Required for building multiple packages
     TEMP_PACKAGES+=(build-essential) && \
     TEMP_PACKAGES+=(pkg-config) && \
-    TEMP_PACKAGES+=(rustc) && \
-    TEMP_PACKAGES+=(cargo) && \
     TEMP_PACKAGES+=(libssl-dev) && \
     TEMP_PACKAGES+=(apt-utils) && \
     # Dependencies
@@ -30,6 +28,10 @@ RUN set -x && \
         "${KEPT_PACKAGES[@]}" \
         "${TEMP_PACKAGES[@]}" \
         && \
+    # Install rust
+    curl https://sh.rustup.rs -sSf -o /tmp/rustup.sh && \
+    bash /tmp/rustup.sh --profile minimal --default-toolchain stable -y && \
+    PATH=$PATH:$HOME/.cargo/bin && \
     # Upgrade pip
     python3 -m pip install --no-cache-dir --upgrade pip && \
     # Install pip packages
