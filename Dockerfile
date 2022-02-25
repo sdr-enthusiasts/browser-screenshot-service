@@ -25,6 +25,7 @@ RUN set -x && \
     TEMP_PACKAGES+=(python3-setuptools) && \
     TEMP_PACKAGES+=(python3-wheel) && \
     TEMP_PACKAGES+=(python3-distutils) && \
+    KEPT_PACKAGES+=(python3-cryptography) && \
     # Install packages
     apt-get update && \
     apt-get install -y --no-install-recommends \
