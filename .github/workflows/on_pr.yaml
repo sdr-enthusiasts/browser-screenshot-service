@@ -80,8 +80,18 @@ jobs:
             Dockerfile
             **.py
             requirements.txt
+            **.yml
             !*.md
             !*.MD
+
+      # Log into ghcr (so we can push images)
+      - name: Login to ghcr.io
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # Set up QEMU for multi-arch builds
       - name: Set up QEMU
