@@ -94,6 +94,16 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v1
 
+      # Set up image tag name
+      - name: Set up image tag name
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        id: tag-name
+        env:
+          ARCH: ${{ matrix.docker-platform }}
+          PRNUM: ${{github.event.pull_request.number}}
+        run: |
+          echo "::set-output name=image_tag::${REGISTRY}/${IMAGE_NAME}:${TAG}-test-pr-${PRNUM}-${ARCH//\//_}"
+
       # Build
       - name: Test Build
         if: steps.changed-files-specific.outputs.any_changed == 'true'
@@ -105,7 +115,7 @@ jobs:
           platforms: ${{ matrix.docker-platform }}
           push: true
           # Append "-test-pr-XXX" to image name
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}-test-pr-${{github.event.pull_request.number}}-${{matrix.docker-platform}}
+          tags: ${{ steps.tag-name.outputs.image_tag }}
 
   test_function:
 
@@ -148,16 +158,25 @@ jobs:
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         id: buildx
         uses: docker/setup-buildx-action@v1
+
+      # Set up image tag name
+      - name: Set up image tag name
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        id: tag-name
+        env:
+          ARCH: ${{ matrix.docker-platform }}
+          PRNUM: ${{github.event.pull_request.number}}
+        run: |
+          echo "::set-output name=image_tag::${REGISTRY}/${IMAGE_NAME}:${TAG}-test-pr-${PRNUM}-${ARCH//\//_}"
       
       # Patch dockerfile to pull from PR-generated image
       - name: Patch dockerfile
         id: patch-dockerfile
         env:
-          SED_SEARCH: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          SED_TO_APPEND: -test-pr-${{github.event.pull_request.number}}-${{matrix.docker-platform}}
+          NEW_IMAGE: ${{ steps.tag-name.outputs.image_tag }}
         run: |
           set -x
-          sed -i "/^FROM ${SED_SEARCH//\//\\/}/ s/$/${SED_TO_APPEND}/" "./Dockerfile.testing"
+          sed -i "s/^FROM .*/${NEW_IMAGE//\//\\/}/g" "./Dockerfile.testing"
           grep '^FROM ' "./Dockerfile.testing"
 
       # Build
