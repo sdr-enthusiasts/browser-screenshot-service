@@ -26,7 +26,7 @@ RUN set -x && \
         "${TEMP_PACKAGES[@]}" \
         && \
     # Upgrade pip
-    python3 -m pip install --upgrade pip && \
+    python3 -m pip install --no-cache-dir --upgrade pip && \
     # Install pip packages
     python3 -m pip install --no-cache-dir -r /opt/app/requirements.txt && \
     # Clean-up
