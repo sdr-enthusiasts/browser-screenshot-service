@@ -14,8 +14,9 @@ RUN set -x && \
     TEMP_PACKAGES+=(build-essential) && \
     TEMP_PACKAGES+=(pkg-config) && \
     # Dependencies
-    KEPT_PACKAGES+=(chromium) && \
     KEPT_PACKAGES+=(chromium-driver) && \
+    KEPT_PACKAGES+=(chromium) && \
+    TEMP_PACKAGES+=(libffi-dev) && \
     TEMP_PACKAGES+=(python3-dev) && \
     TEMP_PACKAGES+=(python3-pip) && \
     # Install packages
