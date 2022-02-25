@@ -22,6 +22,9 @@ RUN set -x && \
     KEPT_PACKAGES+=(python3) && \
     TEMP_PACKAGES+=(python3-dev) && \
     TEMP_PACKAGES+=(python3-pip) && \
+    TEMP_PACKAGES+=(python3-setuptools) && \
+    TEMP_PACKAGES+=(python3-wheel) && \
+    TEMP_PACKAGES+=(python3-distutils) && \
     # Install packages
     apt-get update && \
     apt-get install -y --no-install-recommends \
