@@ -107,7 +107,7 @@ jobs:
       # Set up image tag name
       - name: Set up image tag name
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        id: tag-name
+        id: tag_name
         env:
           ARCH: ${{ matrix.docker-platform }}
           PRNUM: ${{github.event.pull_request.number}}
@@ -127,7 +127,7 @@ jobs:
           platforms: ${{ matrix.docker-platform }}
           push: true
           # Append "-test-pr-XXX" to image name
-          tags: ${{ steps.tag-name.outputs.image_tag }}
+          tags: ${{ steps.tag_name.outputs.image_tag }}
 
   test_function:
     name: Test Functionality
@@ -173,7 +173,7 @@ jobs:
       # Set up image tag name
       - name: Set up image tag name
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        id: tag-name
+        id: tag_name
         env:
           ARCH: ${{ matrix.docker-platform }}
           PRNUM: ${{github.event.pull_request.number}}
@@ -181,28 +181,6 @@ jobs:
           IMAGE_NAME: ${{ github.repository }}
         run: |
           echo "::set-output name=image_tag::${REGISTRY}/${IMAGE_NAME}:test-pr-${PRNUM}-${ARCH//\//_}"
-      
-      # Patch dockerfile to pull from PR-generated image
-      - name: Patch dockerfile
-        id: patch-dockerfile
-        env:
-          NEW_IMAGE: ${{ steps.tag-name.outputs.image_tag }}
-        run: |
-          set -x
-          sed -i "s/^FROM .*/FROM ${NEW_IMAGE//\//\\/}/g" "./Dockerfile.testing"
-          grep '^FROM ' "./Dockerfile.testing"
-
-      # Build
-      - name: Test Build
-        id: test-build
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile.testing
-          no-cache: true
-          platforms: ${{ matrix.docker-platform }}
-          push: false
 
       # Set up testing output filename
       - name: Set up image tag name
@@ -211,26 +189,34 @@ jobs:
         env:
           ARCH: ${{ matrix.docker-platform }}
         run: |
-          echo "::set-output name=output_filename::testing_output/output_${ARCH//\//_}.png"
-
-      # Decode image from set-output in testing container
-      - name: Retrieve test image
+          echo "::set-output name=output_filename::output_${ARCH//\//_}.png"
+      
+      # Test image
+      - name: Perform functionality test
         if: steps.changed-files-specific.outputs.any_changed == 'true'
+        id: tag-name
         env:
-          IMAGE_DATA: ${{ steps.test-build.outputs.output_image }}
+          IMAGE_TAG: ${{ steps.tag_name.outputs.image_tag }}
+          OUTPUT_FILE: ${{ steps.test_output_filename.outputs.output_filename }}
           ARCH: ${{ matrix.docker-platform }}
-          OUTPUT_IMAGE: ${{ steps.test_output_filename.outputs.output_filename }}
         run: |
-          mkdir -p testing_output/
-          echo "$IMAGE_DATA" | sed -z 's/,/\n/g;' | uudecode > "${OUTPUT_IMAGE}"
+          set -x
+          CONTAINER_ID=$(docker run --rm -d -p 5042:5042 --platform "$ARCH" "$IMAGE_TAG")
+          sleep 3
+          curl --output ./"$OUTPUT_FILE" http://127.0.0.1:5042/snap/ADFDF8
+          sleep 1
+          docker logs "$CONTAINER_ID"
+          docker kill "$CONTAINER_ID"
 
+      # Upload snapshot as artifact
       - name: Upload test image as artifact
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: actions/upload-artifact@v2
         with:
-          name: test_snap_${{ matrix.docker-platform }}
-          path: testing_output/output.png
+          name: ${{ steps.test_output_filename.outputs.output_filename }}
+          path: ./${{ steps.test_output_filename.outputs.output_filename }}
 
+      # Upload snapshot to PR
       - name: Upload artifacts to PR
         if: ${{ github.event_name == 'pull_request' }} && steps.changed-files-specific.outputs.any_changed == 'true'
         uses: gavv/pull-request-artifacts@v1.0.0
@@ -238,5 +224,5 @@ jobs:
           commit: ${{ github.event.pull_request.head.sha }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: |
-            ${{ steps.test_output_filename.outputs.output_filename }}
+            ./${{ steps.test_output_filename.outputs.output_filename }}
             
