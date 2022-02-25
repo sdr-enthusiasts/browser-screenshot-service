@@ -101,8 +101,10 @@ jobs:
         env:
           ARCH: ${{ matrix.docker-platform }}
           PRNUM: ${{github.event.pull_request.number}}
+          REGISTRY: ghcr.io
+          IMAGE_NAME: ${{ github.repository }}
         run: |
-          echo "::set-output name=image_tag::${REGISTRY}/${IMAGE_NAME}:${TAG}-test-pr-${PRNUM}-${ARCH//\//_}"
+          echo "::set-output name=image_tag::${REGISTRY}/${IMAGE_NAME}:test-pr-${PRNUM}-${ARCH//\//_}"
 
       # Build
       - name: Test Build
@@ -166,8 +168,10 @@ jobs:
         env:
           ARCH: ${{ matrix.docker-platform }}
           PRNUM: ${{github.event.pull_request.number}}
+          REGISTRY: ghcr.io
+          IMAGE_NAME: ${{ github.repository }}
         run: |
-          echo "::set-output name=image_tag::${REGISTRY}/${IMAGE_NAME}:${TAG}-test-pr-${PRNUM}-${ARCH//\//_}"
+          echo "::set-output name=image_tag::${REGISTRY}/${IMAGE_NAME}:test-pr-${PRNUM}-${ARCH//\//_}"
       
       # Patch dockerfile to pull from PR-generated image
       - name: Patch dockerfile
