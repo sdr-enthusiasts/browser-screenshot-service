@@ -162,6 +162,7 @@ jobs:
 
       # Build
       - name: Test Build
+        id: test-build
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: docker/build-push-action@v2
         with:
@@ -171,5 +172,18 @@ jobs:
           platforms: ${{ matrix.docker-platform }}
           push: false
 
-      # at this point image should be in an env var...
-          
+      # Decode image from set-output in testing container
+      - name: Retrieve test image
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
+        env:
+          IMAGE_DATA: ${{ steps.test-build.outputs.output_image }}
+          ARCH: ${{ matrix.docker-platform }}
+        run: |
+          mkdir -p testing_output/
+          echo "$IMAGE_DATA" | sed -z 's/,/\n/g;' | uudecode > testing_output/output.png
+
+      - name: Upload test image
+        uses: actions/upload-artifact@v2
+        with:
+          name: test_snap_${{ matrix.docker-platform }}
+          path: testing_output/output.png

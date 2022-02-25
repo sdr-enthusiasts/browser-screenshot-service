@@ -23,4 +23,4 @@ RUN set -x && \
     # uuencode output
     uuencode -m /output/out.png - > /output/out.png.uuencoded.base64 && \
     # upload image (the sed puts all of the uuencoded output on one line, so it goes into the variable)
-    echo ::set-output name=output_image_"$(uname -m)"::"$(sed -z 's/\n/,/g;s/,$/\n/' /output/out.png.uuencoded.base64)"
+    echo ::set-output name=output_image::"$(sed -z 's/\n/,/g;s/,$/\n/' /output/out.png.uuencoded.base64)"
