@@ -40,7 +40,7 @@ RUN set -x && \
     # Get rust
     curl https://sh.rustup.rs --output /tmp/rustup.sh && \
     bash /tmp/rustup.sh --default-toolchain stable --profile minimal -y && \
-    source $HOME/.cargo/env && \
+    source "${HOME}/.cargo/env" && \
     # Get geckodriver
     curl -o /tmp/geckodriver.tar.gz --location https://github.com/mozilla/geckodriver/archive/refs/tags/v0.30.0.tar.gz && \
     tar xvf /tmp/geckodriver.tar.gz -C /tmp/geckodriver && \
@@ -48,8 +48,6 @@ RUN set -x && \
     cargo build --release && \
     cp -v ./target/release/geckodriver /usr/local/bin/ && \
     popd && \
-
-
     # Upgrade pip
     python3 -m pip install --no-cache-dir --upgrade pip && \
     # Install pip packages
