@@ -29,7 +29,7 @@ RUN set -x && \
     TEMP_PACKAGES+=(python3-wheel) && \
     TEMP_PACKAGES+=(python3-distutils) && \
     KEPT_PACKAGES+=(python3-cryptography) && \
-    KEPT_PACKAGES*=(python3-selenium) && \
+    KEPT_PACKAGES+=(python3-selenium) && \
     # Install packages
     apt-get update && \
     apt-get install -y --no-install-recommends \
