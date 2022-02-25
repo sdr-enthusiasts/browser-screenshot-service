@@ -21,6 +21,7 @@ RUN set -x && \
     # Dependencies
     KEPT_PACKAGES+=(chromium-driver) && \
     KEPT_PACKAGES+=(chromium) && \
+    KEPT_PACKAGES+=(firefox-esr) && \
     TEMP_PACKAGES+=(libffi-dev) && \
     KEPT_PACKAGES+=(python3) && \
     TEMP_PACKAGES+=(python3-dev) && \
@@ -36,6 +37,19 @@ RUN set -x && \
         "${KEPT_PACKAGES[@]}" \
         "${TEMP_PACKAGES[@]}" \
         && \
+    # Get rust
+    curl https://sh.rustup.rs --output /tmp/rustup.sh && \
+    bash /tmp/rustup.sh --default-toolchain stable --profile minimal -y && \
+    source $HOME/.cargo/env && \
+    # Get geckodriver
+    curl -o /tmp/geckodriver.tar.gz --location https://github.com/mozilla/geckodriver/archive/refs/tags/v0.30.0.tar.gz && \
+    tar xvf /tmp/geckodriver.tar.gz -C /tmp/geckodriver && \
+    pushd /tmp/geckodriver/geckodriver-0.30.0/ && \
+    cargo build --release && \
+    cp -v ./target/release/geckodriver /usr/local/bin/ && \
+    popd && \
+
+
     # Upgrade pip
     python3 -m pip install --no-cache-dir --upgrade pip && \
     # Install pip packages
