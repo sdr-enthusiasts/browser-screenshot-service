@@ -42,6 +42,7 @@ RUN set -x && \
     bash /tmp/rustup.sh --default-toolchain stable --profile minimal -y && \
     source "${HOME}/.cargo/env" && \
     # Get geckodriver
+    mkdir -p /tmp/geckodriver && \
     curl -o /tmp/geckodriver.tar.gz --location https://github.com/mozilla/geckodriver/archive/refs/tags/v0.30.0.tar.gz && \
     tar xvf /tmp/geckodriver.tar.gz -C /tmp/geckodriver && \
     pushd /tmp/geckodriver/geckodriver-0.30.0/ && \
