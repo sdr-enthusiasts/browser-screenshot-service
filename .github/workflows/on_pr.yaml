@@ -189,7 +189,7 @@ jobs:
           NEW_IMAGE: ${{ steps.tag-name.outputs.image_tag }}
         run: |
           set -x
-          sed -i "s/^FROM .*/${NEW_IMAGE//\//\\/}/g" "./Dockerfile.testing"
+          sed -i "s/^FROM .*/FROM ${NEW_IMAGE//\//\\/}/g" "./Dockerfile.testing"
           grep '^FROM ' "./Dockerfile.testing"
 
       # Build
