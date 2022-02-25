@@ -1,6 +1,7 @@
 FROM ghcr.io/sdr-enthusiasts/docker-baseimage:base
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 EXPOSE 5042
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
