@@ -16,6 +16,7 @@ RUN set -x && \
     TEMP_PACKAGES+=(rustc) && \
     TEMP_PACKAGES+=(cargo) && \
     TEMP_PACKAGES+=(libssl-dev) && \
+    TEMP_PACKAGES+=(apt-utils) && \
     # Dependencies
     KEPT_PACKAGES+=(chromium-driver) && \
     KEPT_PACKAGES+=(chromium) && \
