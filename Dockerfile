@@ -15,7 +15,7 @@ RUN set -x && \
     TEMP_PACKAGES+=(pkg-config) && \
     TEMP_PACKAGES+=(rustc) && \
     TEMP_PACKAGES+=(cargo) && \
-    TEMP_PACKAGES+=(openssl-dev) && \
+    TEMP_PACKAGES+=(librust-cargo+openssl-dev) && \
     # Dependencies
     KEPT_PACKAGES+=(chromium-driver) && \
     KEPT_PACKAGES+=(chromium) && \
