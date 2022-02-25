@@ -5,7 +5,9 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN set -x && \
     # install packages needed for testing
     apt-get update && \
-    apt-get install -y imagemagick sharutils gridsite-clients && \
+    apt-get install -y --no-install-recommends \
+        imagemagick sharutils gridsite-clients \
+        && \
     # make output dir
     mkdir -p /output && \
     # start server in the background
@@ -22,5 +24,7 @@ RUN set -x && \
     identify /output/out.png && \
     # uuencode output
     uuencode -m /output/out.png - > /output/out.png.uuencoded.base64 && \
+    # clean up
+    rm -rf /src/* /tmp/* /var/lib/apt/lists/* && \
     # upload image (the sed puts all of the uuencoded output on one line, so it goes into the variable)
     echo ::set-output name=output_image::"$(sed -z 's/\n/,/g;s/,$/\n/' /output/out.png.uuencoded.base64)"
