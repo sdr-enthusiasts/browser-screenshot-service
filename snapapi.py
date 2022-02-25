@@ -104,9 +104,9 @@ def get_screenshot(icao):
   # Set up firefox
   fo = Options()
   fo.headless = True
-  
+
   with selenium.webdriver.Firefox(options=fo) as browser:
-    browser.set_window_size(1200,1600)
+    browser.set_window_size(1200, 1600)
     browser.get(url)
 
     # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.expected_conditions.html
