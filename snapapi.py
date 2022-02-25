@@ -7,6 +7,7 @@ import selenium
 import selenium.webdriver
 import selenium.webdriver.support.wait
 import selenium.webdriver.support.expected_conditions as EC
+from selenium.webdriver.firefox.options import Options
 import time
 # import sys
 import os
@@ -77,29 +78,35 @@ def get_screenshot(icao):
   url = f'{_base}?icao={icao}&{MAP_ARGS}'
   log.info(f"pulling url: {url}")
 
-  co = selenium.webdriver.chrome.options.Options()
-  # co.add_argument("--delay 5")
-  co.add_argument("--headless")
-  co.add_argument("--no-sandbox")
-  # kx1t adds per https://stackoverflow.com/questions/48450594/selenium-timed-out-receiving-message-from-renderer
-  co.add_argument("start-maximized")
-  co.add_argument("enable-automation")
-  co.add_argument("--disable-infobars")
-  co.add_argument("--disable-dev-shm-usage")
-  co.add_argument("--disable-browser-side-navigation")
-  co.add_argument("--disable-gpu")
-  # co.add_argument("--incognito")
+  # co = selenium.webdriver.chrome.options.Options()
+  # # co.add_argument("--delay 5")
+  # co.add_argument("--headless")
+  # co.add_argument("--no-sandbox")
+  # # kx1t adds per https://stackoverflow.com/questions/48450594/selenium-timed-out-receiving-message-from-renderer
+  # co.add_argument("start-maximized")
+  # co.add_argument("enable-automation")
+  # co.add_argument("--disable-infobars")
+  # co.add_argument("--disable-dev-shm-usage")
+  # co.add_argument("--disable-browser-side-navigation")
+  # co.add_argument("--disable-gpu")
+  # # co.add_argument("--incognito")
 
   # thrash on the filesystem, better than the page crashing
   # https://stackoverflow.com/a/53970825/659298
-  if DISABLE_SHM:
-    log.debug("disabling dev-shm-usage")
-    co.add_argument("--disable-dev-shm-usage")
-  if DISABLE_VIZ:
-    log.debug("disabling VizDisplay")
-    co.add_argument("--disable-features=VizDisplayCompositor")
-  co.add_argument('window-size=1200x1600')
-  with selenium.webdriver.Chrome(options=co) as browser:
+  # if DISABLE_SHM:
+  #   log.debug("disabling dev-shm-usage")
+  #   co.add_argument("--disable-dev-shm-usage")
+  # if DISABLE_VIZ:
+  #   log.debug("disabling VizDisplay")
+  #   co.add_argument("--disable-features=VizDisplayCompositor")
+  # co.add_argument('window-size=1200x1600')
+
+  # Set up firefox
+  fo = Options()
+  fo.headless = True
+  
+  with selenium.webdriver.Firefox(options=fo) as browser:
+    browser.set_window_size(1200,1600)
     browser.get(url)
 
     # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.expected_conditions.html
