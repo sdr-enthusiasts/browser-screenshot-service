@@ -1,3 +1,5 @@
+# syntax = docker/dockerfile:experimental
+
 FROM ghcr.io/sdr-enthusiasts/docker-baseimage:base
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
@@ -35,7 +37,12 @@ RUN set -x && \
         && \
     # Install rust
     curl https://sh.rustup.rs -sSf -o /tmp/rustup.sh && \
-    bash /tmp/rustup.sh --profile minimal --default-toolchain stable -y && \
+    bash /tmp/rustup.sh --profile minimal --default-toolchain stable -y
+
+RUN --security=insecure && \
+    mkdir -p /root/.cargo && \
+    chmod 777 /root/.cargo && \
+    mount -t tmpfs none /root/.cargo && \
     PATH=$PATH:$HOME/.cargo/bin && \
     # Upgrade pip
     python3 -m pip install --no-cache-dir --upgrade pip && \
