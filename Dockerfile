@@ -13,6 +13,7 @@ RUN set -x && \
     # Required for building multiple packages
     TEMP_PACKAGES+=(build-essential) && \
     TEMP_PACKAGES+=(pkg-config) && \
+    TEMP_PACKAGES+=(rustc) && \
     # Dependencies
     KEPT_PACKAGES+=(chromium-driver) && \
     KEPT_PACKAGES+=(chromium) && \
