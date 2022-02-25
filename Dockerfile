@@ -41,7 +41,6 @@ RUN set -x && \
     bash /tmp/rustup.sh --profile minimal --default-toolchain stable -y && \
     mkdir -p /root/.cargo && \
     chmod 777 /root/.cargo && \
-    mount -t tmpfs none /root/.cargo && \
     PATH=$PATH:$HOME/.cargo/bin && \
     # Upgrade pip
     python3 -m pip install --no-cache-dir --upgrade pip && \
