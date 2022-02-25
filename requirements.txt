@@ -1,5 +1,5 @@
 #force typesystem to 0.2.5 to fix bug in responder
-typesystem==0.2.5
+typesystem==0.4.1
 responder
 # selenium # via apt
 timeout-decorator
