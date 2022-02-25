@@ -14,6 +14,7 @@ RUN set -x && \
     TEMP_PACKAGES+=(build-essential) && \
     TEMP_PACKAGES+=(pkg-config) && \
     TEMP_PACKAGES+=(rustc) && \
+    TEMP_PACKAGES+=(cargo) && \
     # Dependencies
     KEPT_PACKAGES+=(chromium-driver) && \
     KEPT_PACKAGES+=(chromium) && \
