@@ -37,9 +37,7 @@ RUN set -x && \
         && \
     # Install rust
     curl https://sh.rustup.rs -sSf -o /tmp/rustup.sh && \
-    bash /tmp/rustup.sh --profile minimal --default-toolchain stable -y
-
-RUN --security=insecure && \
+    bash /tmp/rustup.sh --profile minimal --default-toolchain stable -y && \
     mkdir -p /root/.cargo && \
     chmod 777 /root/.cargo && \
     mount -t tmpfs none /root/.cargo && \
