@@ -19,7 +19,6 @@ RUN set -x && \
     TEMP_PACKAGES+=(python3-dev) && \
     TEMP_PACKAGES+=(python3-pip) && \
     KEPT_PACKAGES+=(python3-selenium) && \
-    
     # Install packages
     apt-get update && \
     apt-get install -y --no-install-recommends \
