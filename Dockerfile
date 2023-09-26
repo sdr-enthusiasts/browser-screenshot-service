@@ -21,12 +21,12 @@ RUN set -x && \
     KEPT_PACKAGES+=(python3-selenium) && \
     # Install packages
     apt-get update && \
-    apt-get install -y --no-install-recommends --break-system-packages \
+    apt-get install -y --no-install-recommends \
         "${KEPT_PACKAGES[@]}" \
         "${TEMP_PACKAGES[@]}" \
         && \
     # Install pip packages
-    python3 -m pip install --no-cache-dir -r /opt/app/requirements.txt && \
+    python3 -m pip install --no-cache-dir --break-system-packages -r /opt/app/requirements.txt && \
     # Clean-up
     apt-get remove -y "${TEMP_PACKAGES[@]}" && \
     apt-get autoremove -y && \
