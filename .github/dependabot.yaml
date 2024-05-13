@@ -1,5 +1,4 @@
 ---
-
 version: 2
 
 updates:
@@ -7,16 +6,25 @@ updates:
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: daily
+      interval: "weekly"
+      day: "saturday"
+      time: "00:00"
+      timezone: "Etc/UTC"
 
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
+      time: "00:00"
+      timezone: "Etc/UTC"
 
   # Maintain pip packages for acars_router
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
+      time: "00:00"
+      timezone: "Etc/UTC"
