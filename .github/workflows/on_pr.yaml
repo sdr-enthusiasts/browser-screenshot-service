@@ -22,7 +22,7 @@ jobs:
     name: "Linting: flake8"
     steps:
       - name: Check out source repository
-        uses: actions/checkout@v4.1.5
+        uses: actions/checkout@v4.1.6
       - name: Set up Python environment
         uses: actions/setup-python@v5.1.0
         with:
@@ -36,7 +36,7 @@ jobs:
     name: "Linting: hadolint"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.5
+      - uses: actions/checkout@v4.1.6
       - name: Pull hadolint/hadolint:latest Image
         run: docker pull hadolint/hadolint:latest
       - name: Run hadolint against Dockerfiles
@@ -47,7 +47,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   if: ${{ github.event_name == 'pull_request' }}
   #   steps:
-  #     - uses: actions/checkout@v4.1.5
+  #     - uses: actions/checkout@v4.1.6
   #     - name: Pull koalaman/shellcheck:stable Image
   #       run: docker pull koalaman/shellcheck:stable
   #     - name: Run Shellcheck against shell scripts
@@ -66,7 +66,7 @@ jobs:
     steps:
       # Check out our code
       - name: Checkout
-        uses: actions/checkout@v4.1.5
+        uses: actions/checkout@v4.1.6
         with:
           fetch-depth: 0
 
