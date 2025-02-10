@@ -20,7 +20,7 @@ on:
       - ".gitignore"
       - ".dockerignore"
 
-# Set workflow-wide environment variables
+# Set workflow-wide environment ubuntu-22.04
 #  - REPO: repo name on dockerhub
 #  - IMAGE: image name on dockerhub
 env:
@@ -35,7 +35,7 @@ jobs:
     if: |
       github.event_name == 'workflow_dispatch' &&
       github.event.inputs.reason != ''
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Log dispatch reason
         env:
@@ -45,7 +45,7 @@ jobs:
 
   hadolint:
     name: Run hadolint against docker files
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4.2.2
       - name: Pull hadolint/hadolint:latest Image
@@ -56,7 +56,7 @@ jobs:
   deploy_ghcr_multiarch:
     name: Deploy ghcr.io (Multi-Arch)
     needs: [hadolint]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       # Check out our code
       - name: Checkout
@@ -154,7 +154,7 @@ jobs:
   deploy_ghrc_single_arch:
     name: Deploy ghcr.io
     needs: [hadolint]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         docker-platform:
