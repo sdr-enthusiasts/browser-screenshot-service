@@ -1,4 +1,4 @@
 #force typesystem to 0.2.5 to fix bug in responder
 typesystem==0.2.5
-responder==3.6.0
+responder==3.6.2
 timeout-decorator==0.5.0
