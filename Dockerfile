@@ -18,6 +18,12 @@ RUN set -x && \
     KEPT_PACKAGES+=(chromium-driver) && \
     TEMP_PACKAGES+=(python3-dev) && \
     TEMP_PACKAGES+=(python3-pip) && \
+    # python3-setuptools is required so pip can build legacy (setup.py)
+    # sdists such as timeout-decorator; without it, the empty
+    # /usr/lib/python3/dist-packages/setuptools namespace dir left behind by
+    # python3-pkg-resources shadows the real package and breaks pip's
+    # setup.py fallback (setuptools -> distutils, both unusable).
+    TEMP_PACKAGES+=(python3-setuptools) && \
     KEPT_PACKAGES+=(python3-selenium) && \
     # Install packages
     apt-get update && \
@@ -26,7 +32,10 @@ RUN set -x && \
         "${TEMP_PACKAGES[@]}" \
         && \
     # Install pip packages
-    python3 -m pip install --no-cache-dir --break-system-packages -r /opt/app/requirements.txt && \
+    # --ignore-installed is required because apt-installed packages (e.g.
+    # python3-typing-extensions pulled in by python3-selenium) have no pip
+    # RECORD file, so pip cannot uninstall/upgrade them in place.
+    python3 -m pip install --no-cache-dir --break-system-packages --ignore-installed -r /opt/app/requirements.txt && \
     # Clean-up
     apt-get remove -y "${TEMP_PACKAGES[@]}" && \
     apt-get autoremove -y && \
