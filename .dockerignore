@@ -2,3 +2,7 @@ README.md
 LICENSE
 .git
 .gitignore/
+.direnv
+source-stubs
+.pre-commit-config.yaml
+.envrc
