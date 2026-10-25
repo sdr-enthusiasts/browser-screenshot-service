@@ -56,5 +56,8 @@ jobs:
       build_baseimage_test: ${{ github.event.inputs.use_test_image == 'true' }}
       build_baseimage_url: docker-baseimage:base/docker-baseimage:base-test-pr
       base_variant: ${{ github.event.inputs.base_variant }}
+      # Debian forky dropped armhf from chromium, so next-release (base_variant)
+      # builds skip linux/arm/v7. Stable keeps it while Debian stable ships it.
+      platform_linux_arm32v7_enabled: ${{ github.event.inputs.base_variant == '' }}
     secrets:
       ghcr_token: ${{ secrets.GITHUB_TOKEN }}
